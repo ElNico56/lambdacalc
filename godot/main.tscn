@@ -1,0 +1,42 @@
+[gd_scene load_steps=3 format=3 uid="uid://dyx85uj73qwxa"]
+
+[ext_resource type="Texture2D" uid="uid://dr85oyxbtjd6v" path="res://icon.svg" id="1_mwv7s"]
+[ext_resource type="Script" uid="uid://c1r421so6cv5m" path="res://lambda.gd" id="2_01qmy"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(122, 276)
+zoom = Vector2(0.25, 0.25)
+
+[node name="Icon4" type="Sprite2D" parent="." node_paths=PackedStringArray("fn", "ip")]
+position = Vector2(244, 552)
+texture = ExtResource("1_mwv7s")
+script = ExtResource("2_01qmy")
+fn = NodePath("../Icon")
+ip = NodePath("../Icon5")
+
+[node name="Icon" type="Sprite2D" parent="." node_paths=PackedStringArray("fn", "ip")]
+position = Vector2(122, 276)
+texture = ExtResource("1_mwv7s")
+script = ExtResource("2_01qmy")
+fn = NodePath("../Icon2")
+ip = NodePath("../Icon3")
+
+[node name="Icon2" type="Sprite2D" parent="."]
+position = Vector2(122, 260)
+texture = ExtResource("1_mwv7s")
+script = ExtResource("2_01qmy")
+bind = 0
+
+[node name="Icon3" type="Sprite2D" parent="."]
+position = Vector2(138, 276)
+texture = ExtResource("1_mwv7s")
+script = ExtResource("2_01qmy")
+bind = 1
+
+[node name="Icon5" type="Sprite2D" parent="."]
+position = Vector2(488, 1104)
+texture = ExtResource("1_mwv7s")
+script = ExtResource("2_01qmy")
+bind = 0

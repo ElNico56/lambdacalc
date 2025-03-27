@@ -1,18 +1,18 @@
 ---@diagnostic disable: unicode-name
 
-λ = λ or 'λ'
+L = L or "L"
 
 local function _num(n)
 	if n == 0 then
-		return 0
+		return 1
 	end
-	return {1, _num(n-1)}
+	return {2, _num(n-1)}
 end
 
 function N(n)
-	return {λ,{λ,_num(n)}}
+	return {L,{L,_num(n)}}
 end
 
-Ω = {{λ,{0,0}},{λ,{0,0}}}
-SUCC = {λ,{λ,{λ,{1,{{2,1},0}}}}}
-ADD = {λ,{λ,{{1,SUCC},0}}}
+Ω = {{L,{1,1}},{L,{1,1}}}
+MUL = {L,{L,{L,{2,{3,1}}}}}
+EXP = {L,{L,{1,2}}}

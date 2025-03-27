@@ -1,6 +1,8 @@
 ---@diagnostic disable: unicode-name
 
-λ = λ or 'λ'
+L = L or function (l)
+	return {L,l}
+end
 
 function hsvANSI(h, s, v)
 	if h ~= h then h = 0 end
@@ -20,22 +22,20 @@ function intPart(x)
 end
 
 function lambdaToString(l, d)
-	d = d or -1
+	d = d or 0
 	if d > 20 then return "!!!" end
 	if type(l) == "table" then
-		if l[1] == λ then
-			local col = hsvANSI(intPart(d+1), 0.8, 0.9)
-			return ('%sλ%s.%s%s'):format(col, string.char((d + 1) % 26 + 97), lambdaToString(l[2], d+1), col)
+		if l[1] == L then
+			local col = hsvANSI(intPart(d), 0.8, 0.9)
+			return ('%sL%s.%s%s'):format(col, string.char((d) % 26 + 97), lambdaToString(l[2], d+1), col)
 		end
-		local col = hsvANSI(intPart(d), 0.8, 0.9)
+		local col = "[0m"
 		return ('%s(%s%s %s%s)'):format(col, lambdaToString(l[1], d), col, lambdaToString(l[2], d), col)
 	end
 	if not l then return "[31mNIL" end
-	return hsvANSI(intPart(d-l), 0.8, 0.9) .. string.char((d-l) % 26 + 97)
+	local col = hsvANSI(intPart(d-l), 0.8, 0.9)
+	if d < l then
+		col = ("[38;2;%d;%d;%dm"):format(255/(l-d), 255/(l-d), 255/(l-d))
+	end
+	return col .. string.char((d-l) % 26 + 97)
 end
-
-io.write("[2J[H")
-for i = 0, 2^7 do
-	io.write(hsvANSI(intPart(i), 0.8, 0.9).."█")
-end
-print()

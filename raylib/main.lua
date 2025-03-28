@@ -1,7 +1,9 @@
 -- main.lua
 
 local rl = rl ---@diagnostic disable-line undefined-global
-L = {} -- unique symbol
+L = function(v)
+	return {L, v}
+end
 
 local reduce = require"eval"
 local render = require"render"
@@ -11,13 +13,10 @@ require"fmt"
 local expr
 expr = {{EXP, N(3)}, N(2)} -- 3 ^ 2
 expr = {{MUL, N(2)}, N(3)} -- 2 * 3
-expr = {I, 0}
-expr = {{S, K}, K}         -- Identity
-expr = {M, M}              -- Omega
-expr = {{S, Lark}, Lark}
-
--- expr[1][1].color = {0.1, 0.9, 1.0}
-
+--expr = {{{0, 1}, {2, 3}}, {{4, 5}, {6, 7}}}
+--expr = {{{0, -1}, {-2, -3}}, {{-4, -5}, {-6, -7}}}
+--expr = {L, {L, {L, {L, {{0, 1}, {2, 3}}}}}}
+--expr = {L, {L, {L, {L, {{0, -1}, {-2, -3}}}}}}
 local hist = {}
 
 -- Initialization
@@ -33,7 +32,7 @@ rl.InitWindow(screenWidth, screenHeight, "Tromp diagram renderer")
 while not rl.WindowShouldClose() do
 	if rl.IsMouseButtonPressed(rl.MOUSE_BUTTON_LEFT) then
 		local nextexpr, reduced = reduce(expr)
-		print(lambdaToString(expr))
+		print(Stringify(expr, true))
 		if reduced then
 			table.insert(hist, expr)
 			expr = nextexpr
@@ -51,7 +50,9 @@ while not rl.WindowShouldClose() do
 		s_w, s_h = s_w - 20, s_h - 20
 		local s = math.min(s_w / e_w, s_h / e_h)
 		-- render.render(expr, 10 / s, -10 / s - e_h, math.floor(s / 2))
-		render.render(expr, 5, 5, 10)
+
+		render.render(expr, 5, 5, 10, rl.RAYWHITE)
+		rl.DrawText(Stringify(expr), 10, 10, 30, rl.RAYWHITE)
 	end
 	rl.EndDrawing()
 end

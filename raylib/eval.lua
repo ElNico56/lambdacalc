@@ -1,20 +1,24 @@
 -- eval.lua
 
-local L = L or {} -- unique symbol
+local L = L or function(v)
+	return {L, v}
+end
 
 local incFree
-incFree = function(expr, v, d)
+incFree = function(expr, value, depth)
 	if type(expr) == "table" and expr[1] == L then
 		-- if abstraction
-		d = d or 0
-		return {L, incFree(expr[2], v, d + 1)}
+		depth = depth or 0
+		return {L, incFree(expr[2], value, depth + 1)}
 	elseif type(expr) == "table" then
 		-- if application
-		return {incFree(expr[1], v, d), incFree(expr[2], v, d)}
+		local left = incFree(expr[1], value, depth)
+		local right = incFree(expr[2], value, depth)
+		return {left, right}
 	else
 		-- if variable
-		if expr > (d or 0) then
-			return expr + v - 1
+		if expr > (depth or 0) then
+			return expr + value - 1
 		end
 		return expr
 	end
@@ -22,24 +26,24 @@ end
 
 
 local substitute
-substitute = function(expr, v, d)
+substitute = function(expr, value, depth)
 	if type(expr) == "table" and expr[1] == L then
 		-- if abstraction
-		if d then
-			return {L, substitute(expr[2], v, d + 1)}
+		if depth then
+			return {L, substitute(expr[2], value, depth + 1)}
 		else
-			return substitute(expr[2], v, 1)
+			return substitute(expr[2], value, 1)
 		end
 	elseif type(expr) == "table" then
 		-- if application
-		return {substitute(expr[1], v, d)
-		, substitute(expr[2], v, d)}
+		return {substitute(expr[1], value, depth)
+		, substitute(expr[2], value, depth)}
 	else
 		-- if variable
-		if expr == d then
-			return incFree(v, d)
+		if expr == depth then
+			return incFree(value, depth)
 		end
-		if expr > d then
+		if expr > depth then
 			return expr - 1
 		end
 		return expr

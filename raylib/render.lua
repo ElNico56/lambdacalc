@@ -1,7 +1,17 @@
 -- render.lua
 
 local rl = rl ---@diagnostic disable-line undefined-global
-local L = L or {} -- unique symbol
+local L = L or function(v)
+	return {L, v}
+end
+local debug = {
+	r = {r = 255, g = 0, b = 0, a = 127},
+	g = {r = 0, g = 255, b = 0, a = 127},
+	b = {r = 0, g = 0, b = 255, a = 127},
+	c = {r = 0, g = 255, b = 255, a = 127},
+	m = {r = 255, g = 0, b = 255, a = 127},
+	y = {r = 255, g = 255, b = 0, a = 127},
+}
 
 local function computeSize(expr)
 	if type(expr) == "table" then
@@ -17,43 +27,50 @@ local function computeSize(expr)
 	end
 end
 
+local function drawSquare(x, y, s, color)
+	rl.DrawRectangle(x * s, y * s, s, s, color)
+end
+
 ---@param expr table|number
 ---@param x number
 ---@param y number
 ---@param scale number
-local function render(expr, x, y, scale)
+---@param color table
+local function render(expr, x, y, scale, color)
 	local mw, mh = computeSize(expr)
 	if type(expr) == "table" then
 		if expr[1] == L then
 			local w, h = computeSize(expr[2])
-			render(expr[2], x, y + mh - h - 2, scale)
+			render(expr[2], x, y + mh - h - 2, scale, color)
 			rl.DrawRectangle(
 				x * scale, (y + mh - 1) * scale,
-				(mw - 1) * scale, scale, rl.RAYWHITE)
+				(mw - 1) * scale, scale, color)
 		else
 			local w1, h1 = computeSize(expr[1])
 			local w2, h2 = computeSize(expr[2])
-			render(expr[1], x, y + mh - h1, scale)
-			render(expr[2], x + w1, y + mh - h2, scale)
+			render(expr[1], x, y + mh - h1, scale, color)
+			render(expr[2], x + w1, y + mh - h2, scale, color)
 
 			rl.DrawRectangle(
 				(x + 1) * scale, y * scale,
-				scale, (mh - h1) * scale, rl.RAYWHITE)
+				scale, (mh - h1) * scale, color)
 			rl.DrawRectangle(
 				(x + 1) * scale, (y + 2) * scale,
-				(mw - w2) * scale, scale, rl.RAYWHITE)
+				(mw - w2) * scale, scale, color)
 			rl.DrawRectangle(
 				(x + 1 + w1) * scale, (y + 2) * scale,
-				scale, (mh - h2 - 1) * scale, rl.RAYWHITE)
+				scale, (mh - h2 - 1) * scale, color)
 		end
 	else
 		rl.DrawRectangle(
 			(x + 1) * scale, y * scale,
-			scale, 2 * (expr) * scale, rl.RAYWHITE)
+			scale, 2 * expr * scale, color)
 	end
-	-- rl.DrawRectangleLines(
-	-- 	x * scale + 1, y * scale + 1,
-	-- 	mw * scale - 2, mh * scale - 2, rl.RAYWHITE)
+	--rl.DrawText(Stringify(expr),
+	--	x * scale, y * scale, 30, color)
+	--rl.DrawRectangleLines(
+	--	x * scale, y * scale,
+	--	mw * scale, mh * scale, color)
 end
 
 return {computeSize = computeSize, render = render}

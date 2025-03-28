@@ -1,4 +1,4 @@
----@diagnostic disable: unicode-name
+-- defs.lua
 
 L = L or "L"
 
@@ -13,8 +13,15 @@ function N(n)
 	return {L, {L, _num(n)}}
 end
 
-Ω = {{L, {1, 1}}, {L, {1, 1}}}
-S = {L, {L, {L, {{3, 1}, {2, 1}}}}}
-K = {L, {L, 2}}
+-- Combinator Birds
+
+M = {L, {1, 1}}                     -- Mockingbird
+S = {L, {L, {L, {{3, 1}, {2, 1}}}}} -- Starling
+K = {L, {L, 2}}                     -- Kestrel
+KI = {L, {L, 1}}                    -- Kite
+I = {L, 1}                          -- Idiot
+
+-- Arithmetic
+
 MUL = {L, {L, {L, {2, {3, 1}}}}}
 EXP = {L, {L, {1, 2}}}

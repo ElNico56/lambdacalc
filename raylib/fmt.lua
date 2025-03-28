@@ -29,11 +29,11 @@ local function _str(expr, depth)
 		if expr[1] == L then
 			local v = char(depth % 26 + 97)
 			local a = _str(expr[2], depth + 1)
-			return ('L%s.%s'):format(v, a)
+			return ('%s.%s'):format(v, a)
 		end
 		local left = _str(expr[1], depth)
 		local right = _str(expr[2], depth)
-		return ("(%s %s)"):format(left, right)
+		return ("(%s%s)"):format(left, right)
 	else
 		return char((depth - expr) % 26 + 97)
 	end
@@ -41,11 +41,13 @@ end
 
 local reset = "[0m"
 function Stringify(expr, color)
+	local str = _str(expr, 0)
+	str = str:match"^%((.-)%)$" or str
 	if color then
-		return (_str(expr, 0):gsub("[a-z]", function(letter)
+		return (str:gsub("[a-z]", function(letter)
 			local value = string.byte(letter) - string.byte"a"
-			return hsvANSI(intPart(value), 0.8, 0.9)..letter..reset
+			return hsvANSI(intPart(value), 0.5, 0.9)..letter..reset
 		end))
 	end
-	return _str(expr, 0)
+	return str
 end

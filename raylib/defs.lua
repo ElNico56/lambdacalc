@@ -10,7 +10,7 @@ local function _num(n)
 end
 
 function N(n)
-	return L{L, _num(n)}
+	return {L, {L, _num(n)}}
 end
 
 -- Combinator Birds
@@ -22,10 +22,10 @@ KI = {L, {L, 1}}                    -- Kite
 I = {L, (1)}                        -- Idiot
 O = {L, {L, {1, {2, 1}}}}           -- Owl
 
-Y = L{L{2, {1, 1}}, L{2, {1, 1}}}
+Y = {L, {{L, {2, {1, 1}}}, {L, {2, {1, 1}}}}}
 Theta = {Y, O}
 
 -- Arithmetic
 
-MUL = {L, {L, {L, {2, {3, 1}}}}}
+MUL = {L, {L, {L, {3, {2, 1}}}}}
 EXP = {L, {L, {1, 2}}}

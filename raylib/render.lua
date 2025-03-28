@@ -1,4 +1,4 @@
--- rayrender.lua
+-- render.lua
 
 local rl = rl ---@diagnostic disable-line undefined-global
 local L = L or {} -- unique symbol

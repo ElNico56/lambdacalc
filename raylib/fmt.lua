@@ -1,4 +1,4 @@
--- rayfmt.lua
+-- fmt.lua
 
 local L = L or {} -- unique symbol
 

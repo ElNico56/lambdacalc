@@ -1,4 +1,4 @@
--- raymain.lua
+-- main.lua
 
 local rl = rl ---@diagnostic disable-line undefined-global
 L = {} -- unique symbol
@@ -14,12 +14,11 @@ expr = {{MUL, N(2)}, N(3)} -- 2 * 3
 expr = {I, 0}
 expr = {{S, K}, K}         -- Identity
 expr = {M, M}              -- Omega
+expr = {{S, Lark}, Lark}
 
 -- expr[1][1].color = {0.1, 0.9, 1.0}
 
 local hist = {}
-
-print(lambdaToString(expr))
 
 -- Initialization
 local screenWidth = 1280
@@ -34,11 +33,11 @@ rl.InitWindow(screenWidth, screenHeight, "Tromp diagram renderer")
 while not rl.WindowShouldClose() do
 	if rl.IsMouseButtonPressed(rl.MOUSE_BUTTON_LEFT) then
 		local nextexpr, reduced = reduce(expr)
+		print(lambdaToString(expr))
 		if reduced then
 			table.insert(hist, expr)
 			expr = nextexpr
 		end
-		print(lambdaToString(expr))
 	end
 	if rl.IsMouseButtonPressed(rl.MOUSE_BUTTON_RIGHT) then
 		expr = table.remove(hist) or expr

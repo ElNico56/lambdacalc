@@ -9,11 +9,11 @@ require"defs"
 require"fmt"
 
 local expr
-expr = {M, M}              -- Omega
 expr = {{EXP, N(3)}, N(2)} -- 3 ^ 2
 expr = {{MUL, N(2)}, N(3)} -- 2 * 3
-expr = {{{S, K}, K}}       -- Identity
 expr = {I, 0}
+expr = {{S, K}, K}         -- Identity
+expr = {M, M}              -- Omega
 
 -- expr[1][1].color = {0.1, 0.9, 1.0}
 

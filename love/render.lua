@@ -42,21 +42,22 @@ function render(l, x, y, scale)
 			local w, h = computeSize(l[2])
 			render(l[2], x, y + mh - h - 2, scale)
 			--love.graphics.setColor(1, 0, 0)
-			love.graphics.rectangle("fill", (x) * scale, (y + mh - 1) * scale, (mw - 1) * scale, scale)
+			love.graphics.rectangle("fill", (x) * scale, (y+mh-1) * scale, (mw-1) * scale, scale)
 		else
 			local w1, h1 = computeSize(l[1], x + 0, y)
 			local w2, h2 = computeSize(l[2], x + 4, y)
 			render(l[1], x, y + mh - h1, scale)
 			render(l[2], x + w1, y + mh - h2, scale)
 			--love.graphics.setColor(0, 0, 1)
-			love.graphics.rectangle("fill", (x + 1) * scale, y * scale, scale, (mh - h1) * scale)
-			love.graphics.rectangle("fill", (x + 1) * scale, (y + 2) * scale, (mw - w2) * scale, scale)
-			love.graphics.rectangle("fill", (x + 1 + w1) * scale, (y + 2) * scale, scale, (mh - h2 - 1) * scale)
+			love.graphics.rectangle("fill", (x+1) * scale, y * scale, scale, (mh - h1) * scale)
+			love.graphics.rectangle("fill", (x+1) * scale, (y+2) * scale, (mw-w2) * scale, scale)
+			love.graphics.rectangle("fill", (x+1+w1) * scale, (y+2) * scale, scale, (mh - h2 - 1) * scale)
 		end
 		if l.color then love.graphics.setColor(prevColor) end
 	else
 		--love.graphics.setColor(0, 1, 0)
-		love.graphics.rectangle("fill", (x + 1) * scale, y * scale, scale, 2 * (l) * scale)
+		love.graphics.rectangle("fill", (x+1) * scale, y * scale, scale, 2 * (l) * scale)
 	end
 	--love.graphics.rectangle("line", x * scale + 1, y * scale + 1, mw * scale - 2, mh * scale - 2)
+
 end

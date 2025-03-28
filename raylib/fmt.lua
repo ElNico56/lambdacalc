@@ -29,9 +29,11 @@ local function _str(expr, depth)
 		if expr[1] == L then
 			local v = char(depth % 26 + 97)
 			local a = _str(expr[2], depth + 1)
-			return ('%s.%s'):format(v, a)
+			a = a:match"^%((.-)%)$" or a
+			return ('L%s.%s'):format(v, a)
 		end
 		local left = _str(expr[1], depth)
+		left = left:match"^%((.-)%)$" or left
 		local right = _str(expr[2], depth)
 		return ("(%s%s)"):format(left, right)
 	else
@@ -43,6 +45,9 @@ local reset = "[0m"
 function Stringify(expr, color)
 	local str = _str(expr, 0)
 	str = str:match"^%((.-)%)$" or str
+	while str ~= str:gsub("([a-z])%.L([a-z])", "%1%2") do
+		str = str:gsub("([a-z])%.L([a-z])", "%1%2")
+	end
 	if color then
 		return (str:gsub("[a-z]", function(letter)
 			local value = string.byte(letter) - string.byte"a"

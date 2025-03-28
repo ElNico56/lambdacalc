@@ -1,9 +1,9 @@
-godot - june
+godot - BlueMoonJune
 
-love - june
+love - BlueMoonJune
 
-old - june
+old - BlueMoonJune
 
-raylib - nico
+raylib - ElNico56
 
-lambda.py - nico
+lambda.py - ElNico56

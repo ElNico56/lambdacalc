@@ -1,6 +1,8 @@
--- rayfmt.lua
+---@diagnostic disable: unicode-name
 
-local L = L or {} -- unique symbol
+L = L or function(l)
+	return {L, l}
+end
 
 function hsvANSI(h, s, v)
 	if h ~= h then h = 0 end

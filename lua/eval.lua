@@ -15,7 +15,7 @@
 L = L or 'L'
 
 local function overload(fAbs, fApp, fVar, fAll)
-	return function (l, ...)
+	return function(l, ...)
 		if fAll then fAll(l, ...) end
 		if type(l) == "table" then
 			if l[1] == L then
@@ -31,56 +31,55 @@ end
 
 local incFree
 incFree = overload(
-function (l, v, d)
-	d = d or 0
-	return {L, incFree(l[2], v, d + 1)}
-end, function (l, v, d)
-	return {incFree(l[1], v, d), incFree(l[2], v, d)}
-end, function (l, v, d)
-	if l > (d or 0) then
-		return l + v - 1
+	function(l, v, d)
+		d = d or 0
+		return {L, incFree(l[2], v, d + 1)}
+	end, function(l, v, d)
+		return {incFree(l[1], v, d), incFree(l[2], v, d)}
+	end, function(l, v, d)
+		if l > (d or 0) then
+			return l + v - 1
+		end
+		return l
 	end
-	return l
-end
 )
 
 local subst
 subst = overload(
-function (l, v, d)
-	if d then
-		return {L, subst(l[2], v, d + 1)}
-	else
-		return subst(l[2], v, 1)
+	function(l, v, d)
+		if d then
+			return {L, subst(l[2], v, d + 1)}
+		else
+			return subst(l[2], v, 1)
+		end
+	end, function(l, v, d)
+		return {subst(l[1], v, d)
+		, subst(l[2], v, d)}
+	end, function(l, v, d)
+		if l == d then
+			return incFree(v, d)
+		end
+		if l > d then
+			return l - 1
+		end
+		return l
 	end
-end, function (l, v, d)
-	return {subst(l[1], v, d)
-	,subst(l[2], v, d)}
-end, function (l, v, d)
-	if l == d then
-		return incFree(v, d)
-	end
-	if l > d then
-		return l - 1
-	end
-	return l
-end
 )
 
 reduce = overload(
-function (l)
-	local res, s = reduce(l[2])
-	return {L, res}, s
-end, function (l)
-	if type(l[1]) == "table" and l[1][1] == L then
-		return subst(l[1], l[2]), true
+	function(l)
+		local res, s = reduce(l[2])
+		return {L, res}, s
+	end, function(l)
+		if type(l[1]) == "table" and l[1][1] == L then
+			return subst(l[1], l[2]), true
+		end
+		local v, s = reduce(l[1])
+		if s then return {v, l[2]}, true end
+		v, s = reduce(l[2])
+		if s then return {l[1], v}, true end
+		return l, false
+	end, function(l)
+		return l, false
 	end
-	local v, s = reduce(l[1])
-	if s then return {v, l[2]}, true end
-	v, s = reduce(l[2])
-	if s then return {l[1], v}, true end
-	return l, false
-end, function (l)
-	return l, false
-end
 )
-

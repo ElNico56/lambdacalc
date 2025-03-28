@@ -1,8 +1,6 @@
 -- defs.lua
 
-local L = L or function(v)
-	return {L, v}
-end
+local L = L or {} -- unique symbol
 
 local function _num(n)
 	if n == 0 then

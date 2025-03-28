@@ -1,17 +1,8 @@
 -- render.lua
 
 local rl = rl ---@diagnostic disable-line undefined-global
-local L = L or function(v)
-	return {L, v}
-end
-local debug = {
-	r = {r = 255, g = 0, b = 0, a = 127},
-	g = {r = 0, g = 255, b = 0, a = 127},
-	b = {r = 0, g = 0, b = 255, a = 127},
-	c = {r = 0, g = 255, b = 255, a = 127},
-	m = {r = 255, g = 0, b = 255, a = 127},
-	y = {r = 255, g = 255, b = 0, a = 127},
-}
+local L = L or {} -- unique symbol
+
 
 local function computeSize(expr)
 	if type(expr) == "table" then

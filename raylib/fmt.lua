@@ -3,9 +3,7 @@
 local max, min, abs = math.max, math.min, math.abs
 local floor, log = math.floor, math.log
 local char = string.char
-local L = L or function(v)
-	return {L, v}
-end
+local L = L or {} -- unique symbol
 
 local function hsvANSI(h, s, v)
 	if h ~= h then h = 0 end

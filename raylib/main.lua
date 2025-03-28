@@ -1,9 +1,7 @@
 -- main.lua
 
 local rl = rl ---@diagnostic disable-line undefined-global
-L = function(v)
-	return {L, v}
-end
+L = {} -- unique symbol
 
 local reduce = require"eval"
 local render = require"render"

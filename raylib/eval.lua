@@ -1,8 +1,6 @@
 -- eval.lua
 
-local L = L or function(v)
-	return {L, v}
-end
+local L = L or {} -- unique symbol
 
 local incFree
 incFree = function(expr, value, depth)

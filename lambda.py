@@ -83,7 +83,7 @@ def int_part(x):
     return (1 / b1 + x % b / b)
 
 
-def _str(expr, depth=0):
+def _str(expr, depth):
     if expr is None:
         return "NIL"
     if depth > 20:

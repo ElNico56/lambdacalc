@@ -1,9 +1,10 @@
 -- fmt.lua
 
+
 local max, min, abs = math.max, math.min, math.abs
 local floor, log = math.floor, math.log
 local char = string.char
-local L = L or {} -- unique symbol
+
 
 local function hsvANSI(h, s, v)
 	if h ~= h then h = 0 end
@@ -12,8 +13,9 @@ local function hsvANSI(h, s, v)
 	local g = (1 + s * (min(max(abs((h + 4) % 6 - 3) - 1, 0), 1) - 1)) * v
 	local b = (1 + s * (min(max(abs((h + 2) % 6 - 3) - 1, 0), 1) - 1)) * v
 
-	return ("[38;2;%d;%d;%dm"):format(r * 255, g * 255, b * 255)
+	return ("\x1b[38;2;%d;%d;%dm"):format(r * 255, g * 255, b * 255)
 end
+
 
 local function intPart(x)
 	local b = 2 ^ floor(log(x, 2))
@@ -22,13 +24,14 @@ local function intPart(x)
 	return ret
 end
 
+
 local function _str(expr, depth)
 	if not expr then return "NIL" end
 	if depth > 20 then return "!!!" end
 	if type(expr) == "table" then
-		if expr[1] == L then
+		if #expr == 1 then
 			local v = char(depth % 26 + 97)
-			local a = _str(expr[2], depth + 1)
+			local a = _str(expr[1], depth + 1)
 			return ('(L%s.%s)'):format(v, a)
 		end
 		local left = _str(expr[1], depth)
@@ -39,7 +42,7 @@ local function _str(expr, depth)
 	end
 end
 
-local reset = "[0m"
+
 function Stringify(expr, color)
 	local str = _str(expr, 0)
 	while str ~= str:gsub("([a-z])%.L([a-z])", "%1%2") do
@@ -48,7 +51,7 @@ function Stringify(expr, color)
 	if color then
 		return (str:gsub("[a-z]", function(letter)
 			local value = string.byte(letter) - string.byte"a"
-			return hsvANSI(intPart(value), 0.5, 0.9)..letter..reset
+			return hsvANSI(intPart(value), 0.5, 0.9)..letter.."\x1b[0m"
 		end))
 	end
 	return str

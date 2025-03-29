@@ -1,13 +1,13 @@
 -- render.lua
 
+
 local rl = rl ---@diagnostic disable-line undefined-global
-local L = L or {} -- unique symbol
 
 
 local function computeSize(expr)
 	if type(expr) == "table" then
-		if expr[1] == L then
-			local w, h = computeSize(expr[2])
+		if #expr == 1 then
+			local w, h = computeSize(expr[1])
 			return w, h + 2
 		end
 		local w1, h1 = computeSize(expr[1])
@@ -30,9 +30,9 @@ end
 local function render(expr, x, y, scale, color)
 	local mw, mh = computeSize(expr)
 	if type(expr) == "table" then
-		if expr[1] == L then
-			local w, h = computeSize(expr[2])
-			render(expr[2], x, y + mh - h - 2, scale, color)
+		if #expr == 1 then
+			local w, h = computeSize(expr[1])
+			render(expr[1], x, y + mh - h - 2, scale, color)
 			rl.DrawRectangle(
 				x * scale, (y + mh - 1) * scale,
 				(mw - 1) * scale, scale, color)

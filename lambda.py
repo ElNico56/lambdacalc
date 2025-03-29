@@ -2,13 +2,11 @@
 
 import math
 
-L = object()  # Unique symbol for lambda abstraction
-
 
 def inc_free(expr, value, depth=0):
-    if isinstance(expr, list) and expr[0] == L:
+    if isinstance(expr, list) and len(expr) == 1:
         # If abstraction
-        return [L, inc_free(expr[1], value, depth + 1)]
+        return [inc_free(expr[0], value, depth + 1)]
     elif isinstance(expr, list):
         # If application
         left = inc_free(expr[0], value, depth)
@@ -22,18 +20,17 @@ def inc_free(expr, value, depth=0):
 
 
 def substitute(expr, value, depth=None):
-    if isinstance(expr, list) and expr[0] == L:
+    if isinstance(expr, list) and len(expr) == 1:
         # If abstraction
         if depth is not None:
-            return [L, substitute(expr[1], value, depth + 1)]
+            return [substitute(expr[0], value, depth + 1)]
         else:
-            return substitute(expr[1], value, 1)
+            return substitute(expr[0], value, 1)
     elif isinstance(expr, list):
         # If application
-        return [
-            substitute(expr[0], value, depth),
-            substitute(expr[1], value, depth)
-        ]
+        left = substitute(expr[0], value, depth)
+        right = substitute(expr[1], value, depth)
+        return [left, right]
     else:
         # If variable
         if expr == depth:
@@ -43,21 +40,25 @@ def substitute(expr, value, depth=None):
         return expr
 
 
-def reduce(expr):
-    if isinstance(expr, list) and expr[0] == L:
+def reduce(expr, handedness=True):
+    if isinstance(expr, list) and len(expr) == 1:
         # If abstraction
-        res, s = reduce(expr[1])
-        return [L, res], s
+        res, s = reduce(expr[0])
+        return [res], s
     elif isinstance(expr, list):
         # If application
-        if isinstance(expr[0], list) and expr[0][0] == L:
+        if isinstance(expr[0], list) and len(expr[0]) == 1:
             return substitute(expr[0], expr[1]), True
-        v, s = reduce(expr[0])
-        if s:
-            return [v, expr[1]], True
-        v, s = reduce(expr[1])
-        if s:
-            return [expr[0], v], True
+        if handedness:
+            v, s = reduce(expr[1])
+            if s: return [expr[0], v], True
+            v, s = reduce(expr[0])
+            if s: return [v, expr[1]], True
+        else:
+            v, s = reduce(expr[0])
+            if s: return [v, expr[1]], True
+            v, s = reduce(expr[1])
+            if s: return [expr[0], v], True
         return expr, False
     else:
         # If variable
@@ -89,9 +90,9 @@ def _str(expr, depth):
     if depth > 20:
         return "!!!"
     if isinstance(expr, list):
-        if expr[0] == L:
+        if len(expr) == 1:
             v = chr(depth % 26 + 97)
-            a = _str(expr[1], depth + 1)
+            a = _str(expr[0], depth + 1)
             return f"(L{v}.{a})"
         left = _str(expr[0], depth)
         right = _str(expr[1], depth)
@@ -115,30 +116,30 @@ def _num(n):
 
 
 def N(n):
-    return [L, [L, _num(n)]]
+    return [[_num(n)]]
 
 
-I = [L, 1]  # Idiot
-M = [L, [1, 1]]  # Mockingbird
-S = [L, [L, [L, [[3, 1], [2, 1]]]]]  # Starling
+I = [1]
+M = [[1, 1]]
+S = [[[[[3, 1], [2, 1]]]]]
 
-T = K = [L, [L, 2]]  # Kestrel / True
-F = KI = [L, [L, 1]]  # Kite / False
+T = K = [[2]]
+F = KI = [[1]]
 
-O = [L, [L, [1, [2, 1]]]]  # Owl
+O = [[[1, [2, 1]]]]
 
-Cons = [L, [L, [L, [[1, 3], 2]]]]  # (\x. (\y. (\f. ((f x) y))))
-Car = [L, [1, T]]  # (\p. (p true))
-Cdr = [L, [1, F]]  # (\p. (p false))
-Nil = [L, T]  # (\x. true)
+Cons = [[[[[1, 3], 2]]]]
+Car = [[1, T]]
+Cdr = [[1, F]]
+Nil = [T]
 
-Y = [L, [[L, [2, [1, 1]]], [L, [2, [1, 1]]]]]
+Y = [[[[2, [1, 1]]], [[2, [1, 1]]]]]
 Theta = [Y, O]
 
 # Arithmetic
 
-MUL = [L, [L, [L, [3, [2, 1]]]]]
-EXP = [L, [L, [1, 2]]]
+MUL = [[[[3, [2, 1]]]]]
+EXP = [[[1, 2]]]
 
 if __name__ == "__main__":
     while True:

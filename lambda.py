@@ -92,7 +92,7 @@ def _str(expr, depth=0):
         if expr[0] == L:
             v = chr(depth % 26 + 97)
             a = _str(expr[1], depth + 1)
-            return f"L{v}.{a}"
+            return f"(L{v}.{a})"
         left = _str(expr[0], depth)
         right = _str(expr[1], depth)
         return f"({left}{right})"
@@ -118,12 +118,19 @@ def N(n):
     return [L, [L, _num(n)]]
 
 
+I = [L, 1]  # Idiot
 M = [L, [1, 1]]  # Mockingbird
 S = [L, [L, [L, [[3, 1], [2, 1]]]]]  # Starling
-K = [L, [L, 2]]  # Kestrel
-KI = [L, [L, 1]]  # Kite
-I = [L, (1)]  # Idiot
+
+T = K = [L, [L, 2]]  # Kestrel / True
+F = KI = [L, [L, 1]]  # Kite / False
+
 O = [L, [L, [1, [2, 1]]]]  # Owl
+
+Cons = [L, [L, [L, [[1, 3], 2]]]]  # (\x. (\y. (\f. ((f x) y))))
+Car = [L, [1, T]]  # (\p. (p true))
+Cdr = [L, [1, F]]  # (\p. (p false))
+Nil = [L, T]  # (\x. true)
 
 Y = [L, [[L, [2, [1, 1]]], [L, [2, [1, 1]]]]]
 Theta = [Y, O]
@@ -136,7 +143,7 @@ EXP = [L, [L, [1, 2]]]
 if __name__ == "__main__":
     while True:
         line = input("> ")
-        if line in ["quit", "exit", "q"]:
+        if line in ["quit", "exit", "q", ""]:
             break
         try:
             expr = eval(line)

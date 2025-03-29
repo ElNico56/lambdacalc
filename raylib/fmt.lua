@@ -43,7 +43,7 @@ local function _str(expr, depth)
 end
 
 
-function Stringify(expr, color)
+local function stringify(expr, color)
 	local str = _str(expr, 0)
 	while str ~= str:gsub("([a-z])%.L([a-z])", "%1%2") do
 		str = str:gsub("([a-z])%.L([a-z])", "%1%2")
@@ -56,3 +56,5 @@ function Stringify(expr, color)
 	end
 	return str
 end
+
+return stringify

@@ -6,11 +6,12 @@ local rl = rl ---@diagnostic disable-line undefined-global
 
 local reduce = require"eval"
 local render = require"render"
+local stringify = require"fmt"
 require"defs"
-require"fmt"
 
 local expr
 expr = {{EXP, N(4)}, N(3)} -- 4 ^ 3
+expr = {{ADD, N(4)}, N(3)} -- 4 + 3
 --expr = {{MUL, N(4)}, N(3)} -- 4 * 3
 --expr = {{S, K}, K}
 --expr = {{{2, {1, 1}}}}
@@ -39,7 +40,7 @@ while not rl.WindowShouldClose() do
 	end
 	if rl.IsMouseButtonPressed(rl.MOUSE_BUTTON_LEFT) then
 		local nextexpr, reduced = reduce(expr, handedness)
-		print(Stringify(expr, true))
+		print(stringify(expr, true))
 		if reduced then
 			table.insert(hist, expr)
 			expr = nextexpr
@@ -59,7 +60,7 @@ while not rl.WindowShouldClose() do
 		-- render.render(expr, 10 / s, -10 / s - e_h, math.floor(s / 2))
 
 		render.render(expr, 0, 10, 5, rl.RAYWHITE)
-		rl.DrawText(Stringify(expr), 10, 10, 30, rl.RAYWHITE)
+		rl.DrawText(stringify(expr), 10, 10, 30, rl.RAYWHITE)
 	end
 	rl.EndDrawing()
 end
